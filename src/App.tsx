@@ -23,30 +23,40 @@ function App() {
         {id: v1(), title: "GraphQL", isDone: false},
     ]
 
-
     const [task, setTask] = useState<Array<TasksType>>(tasks)
-
+    const [error, setError] = useState<string>('')
+    const [buttonValue, setButtonValue] = useState<ButtonType>('All')
 
     const addTask = (newValue: string) => {
-        const newTask: TasksType = {id: v1(), title: newValue, isDone: false}
-        setTask([newTask, ...task])
+        if (newValue.trim() !== '') {
+            const newTask: TasksType = {id: v1(), title: newValue, isDone: false}
+            setTask([newTask, ...task])
+        } else {
+            setError('Title is required')
+        }
+    }
 
+    const changeError = (error: string) => {
+        setError(error)
     }
 
     const changeFilter = (name: ButtonType) => {
-        if (name === 'All') {
-            setTask([...tasks])
-        }
-        if (name === 'Active') {
-            setTask([...tasks].filter(t => !t.isDone))
-        }
-        if (name === 'Completed') {
-            setTask([...tasks].filter(t => t.isDone))
+        setButtonValue(name)
+        switch (name) {
+            case "All": setTask([...tasks])
+                break
+            case "Active": setTask([...tasks].filter(t => !t.isDone))
+                break
+            case "Completed": setTask([...tasks].filter(t => t.isDone))
         }
     }
 
     const taskRemove = (id: string) => {
         setTask(task.filter(t => t.id !== id))
+    }
+
+    const changeCheckbox = (id: string, isDone: boolean) => {
+        setTask(task.map(t => t.id === id ? {...t, isDone: isDone} : t))
     }
 
     return (
@@ -55,7 +65,11 @@ function App() {
                       tasks={task}
                       taskRemove={taskRemove}
                       changeFilter={changeFilter}
-                      addTask={addTask}/>
+                      addTask={addTask}
+                      changeCheckbox={changeCheckbox}
+                      error={error}
+                      changeError={changeError}
+                      buttonValue={buttonValue}/>
         </div>
     );
 }

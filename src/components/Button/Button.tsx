@@ -1,17 +1,20 @@
 import React from "react";
-
+import styles from '../../Styles.module.css'
+import {ButtonType} from "../../App";
 
 type ButtonTypeProps = {
     name: string
     callback: () => void
+    buttonValue?: ButtonType | ''
 }
 
 export const Button = (props: ButtonTypeProps) => {
+    const {name, callback, buttonValue} = props
     const onCLickHandler = () => {
-        props.callback()
+        callback()
     }
 
     return (
-        <button onClick={onCLickHandler}>{props.name}</button>
+        <button className={buttonValue ? styles.activeFilter : ''} onClick={onCLickHandler}>{name}</button>
     )
 }
